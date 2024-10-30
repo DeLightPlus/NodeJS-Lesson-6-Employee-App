@@ -38,12 +38,37 @@
     font-weight: 600;
 }
 
-.employee-card
+.image_preview
 {
+  display: flex;
+  flex-direction: row;
+}
+
+.employee_card
+{
+    display: flex;
     border-radius: 16px;
     background: #ddd;
-    width: 100%;
+    width: 380px;
+    padding: 8px;
     margin-bottom: 8px;
+    justify-content: space-between;
+    align-items: start;
+    gap: 16px;
+}
+
+.employee_details
+{
+  flex: 1;  
+}
+
+.employee_details h1
+{
+  background:#3494fa;
+  padding: 8px;
+  border-top-right-radius: 8px;
+  font-size: 18px;
+  font-weight: 600;
 }
 
 .content-1 

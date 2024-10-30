@@ -1,25 +1,26 @@
 import React, { useState, useEffect } from "react";
 import axios from "axios";
-import { RiSave2Fill, RiSearchEyeLine, RiDeleteBin2Line, RiEdit2Line } from '@remixicon/react';
 import EmployeeCard from "./EmployeeCard";
 
 function AddEmployee() {
+    const [employeeId, setEmployeeId] = useState("");
     const [name, setName] = useState("");
-    const [emailAddress, setEmailAddress] = useState("");
-    const [phoneNumber, setPhoneNumber] = useState("");
-    const [image, setImage] = useState("");
+    const [email, setEmailAddress] = useState("");
+    const [phone, setPhoneNumber] = useState("");
+    const [img_url, setImage] = useState(""); // Ensure this is consistent
     const [position, setPosition] = useState("");
-    const [id, setID] = useState("");
+    
     const [submittedData, setSubmittedData] = useState(null);
     const [employees, setEmployees] = useState([]);
-    const [editingEmployee, setEditingEmployee] = useState(null);
-    const [editModalOpen, setEditModalOpen] = useState(false);
     const [errors, setErrors] = useState({}); // State for holding validation errors
 
-    const handleSubmits = async () => {
-        const employee = { id, name, emailAddress, phoneNumber, position,  image };
-        const validationErrors = validateInputs(employee);
+    const handleSubmits = async (e) => {
+        e.preventDefault();
 
+        const employee = { employeeId, name, email, phone, position, img_url };
+        console.log('adding, ', employee);
+        
+        const validationErrors = validateInputs(employee);
         if (Object.keys(validationErrors).length > 0) {
             setErrors(validationErrors);
             return; // Stop submission if there are validation errors
@@ -28,6 +29,7 @@ function AddEmployee() {
         try {
             const response = await axios.post("http://localhost:8000/api/employees", employee);
             const data = response.data;
+
             setSubmittedData(employee);
             console.log(data);
             clearForm(); // Clear form after successful submission
@@ -38,12 +40,14 @@ function AddEmployee() {
 
     const validateInputs = (employee) => {
         const errors = {};
+
+        if (!employee.employeeId) errors.employeeId = "ID is required."; // Corrected property
         if (!employee.name) errors.name = "Name is required.";
-        if (!employee.emailAddress) errors.emailAddress = "Email is required.";
-        if (!/\S+@\S+\.\S+/.test(employee.emailAddress)) errors.emailAddress = "Email is invalid.";
-        if (!employee.phoneNumber) errors.phoneNumber = "Phone number is required.";
+        if (!employee.email) errors.email = "Email is required.";
+        if (!/\S+@\S+\.\S+/.test(employee.email)) errors.email = "Email is invalid.";
+        if (!employee.phone) errors.phone = "Phone number is required.";
         if (!employee.position) errors.position = "Position is required.";
-        if (!employee.ID) errors.ID = "ID is required.";
+        
         return errors;
     };
 
@@ -51,9 +55,9 @@ function AddEmployee() {
         setName("");
         setEmailAddress("");
         setPhoneNumber("");
-        setImage("");
+        setImage(""); // Clear image URL
         setPosition("");
-        setID("");
+        setEmployeeId("");
         setErrors({}); // Clear errors on form reset
     };
 
@@ -67,105 +71,84 @@ function AddEmployee() {
         }
     };
 
-    const editEmployee = async (employeeId, updatedEmployee) => {
-        try {
-            const response = await axios.put(`http://localhost:8000/api/employees/${employeeId}`, updatedEmployee);
-            const data = response.data;
-            console.log(data);
-
-            const updatedEmployees = employees.map((employee) => 
-                employee.id === employeeId ? updatedEmployee : employee
-            );
-            setEmployees(updatedEmployees);
-            setEditingEmployee(updatedEmployee);
-        } catch (error) {
-            console.error("Error editing employee:", error);
-        }
-    };
-
     useEffect(() => {
         get_users();
     }, []);
 
     return (
         <div className="AddEmployees">
-            <EmployeeCard employee={ {id, name, emailAddress, phoneNumber, position, image}}/>
+            <EmployeeCard employee={{ employeeId, name, email, phone, position, img_url }} />
             <div className="form-container">
                 <h2>Add Employee</h2><hr/>
-                <form className="">
-                    <label className="">
+                <form onSubmit={handleSubmits}>
+                    <label>
+                        ID:
+                        <input
+                            type="text"
+                            value={employeeId}
+                            onChange={(e) => setEmployeeId(e.target.value)}
+                        />
+                        {errors.employeeId && <span className="text-red-500">{errors.employeeId}</span>}
+                    </label>
+                    
+                    <label>
                         Enter your name:
-                        <input className=""
+                        <input
                             type="text"
                             value={name}
                             onChange={(e) => setName(e.target.value)}
                         />
-                        {
-                            errors.name && 
-                                <span className="">{errors.name}</span>
-                        }
+                        {errors.name && <span>{errors.name}</span>}
                     </label>
 
                     <label>
                         Email address:
-                        <input className="bg-gray border border-gray shadow rounded-sm"
+                        <input
                             type="text"
-                            value={emailAddress}
+                            value={email}
                             onChange={(e) => setEmailAddress(e.target.value)}
                         />
-                        {
-                            errors.emailAddress && 
-                                <span className="">{errors.emailAddress}</span>
-                        }
+                        {errors.email && <span>{errors.email}</span>}
                     </label>
 
                     <label>
                         Phone number:
-                        <input className=""
+                        <input
                             type="text"
-                            value={phoneNumber}
+                            value={phone}
                             onChange={(e) => setPhoneNumber(e.target.value)}
                         />
-                        {
-                            errors.phoneNumber && 
-                                <span className="">{errors.phoneNumber}</span>
-                        }
+                        {errors.phone && <span>{errors.phone}</span>}
                     </label>
 
-                    <label>
-                        Image:
-                        <input type="file" onChange={(e) => setImage(URL.createObjectURL(e.target.files[0]))} />
+                    <label className="image_preview">                        
+                        {
+                            img_url && (
+                                <div>
+                                    <h3>Preview:</h3>
+                                    <img src={img_url} alt="Preview" style={{ height: "150px", objectFit: "cover" }} />
+                                </div>
+                            )
+                        }
+                        <div>Image: 
+                        <input
+                            type="file"
+                            onChange={(e) => setImage(URL.createObjectURL(e.target.files[0]))}
+                        /></div>
+                        
                     </label>
 
                     <label>
                         Employee position:
-                        <input className=""
+                        <input
                             type="text"
                             value={position}
                             onChange={(e) => setPosition(e.target.value)}
                         />
-                        {
-                            errors.position && 
-                                <span className="">{errors.position}</span>
-                        }
-                    </label>
+                        {errors.position && <span>{errors.position}</span>}
+                    </label>                    
 
-                    <label>
-                        ID:
-                        <input className=""
-                            type="text"
-                            value={id}
-                            onChange={(e) => setID(e.target.value)}
-                        />
-                        {
-                            errors.ID && 
-                                <span className="text-red-500">{errors.ID}</span>
-                        }
-                    </label>
-
-                    <button className="addemployee_btn" 
-                        onClick={handleSubmits}
-                    >
+                    <button className="addemployee_btn" type="submit">
                         Submit
                     </button>
                 </form>
@@ -175,4 +158,3 @@ function AddEmployee() {
 }
 
 export default AddEmployee;
-

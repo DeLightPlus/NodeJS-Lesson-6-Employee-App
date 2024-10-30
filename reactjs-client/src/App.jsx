@@ -1,16 +1,35 @@
-import { useState } from 'react';
+import { useEffect, useState } from 'react';
+import axios from 'axios';
+
 import './App.css'
 
-import Search from './components/Header';
 import AddEmployee from './components/AddEmployee';
 import Header from './components/Header';
-// import Form from './components/AddEmployee';
-
+import EmployeeList from './components/EmployeeList';
 
 
 function App() 
 {
-  
+  const [employees, setEmployees] = useState([]);
+  const get_users = async () => 
+    {
+      try 
+      {
+          const response = await axios.get("http://localhost:8000/api/employees");
+          const data = response.data;
+          console.log(data);
+          
+          setEmployees(data);
+      } 
+      catch (error) 
+      {
+          console.error("Error fetching employees:", error);
+      }
+  };
+
+  useEffect(() => {
+        get_users();
+    }, []);
 
   return (
     <div className='EmployeeApp'>      
@@ -20,8 +39,10 @@ function App()
 
       <div className='Employees'>
         <AddEmployee />
+        <EmployeeList employees={ employees }/>
       </div>
     </div>
+    
 
   )
 }

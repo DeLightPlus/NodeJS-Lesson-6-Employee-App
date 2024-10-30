@@ -1,25 +1,42 @@
-
 import React from 'react';
 
 const EmployeeCard = ({ employee }) => {
-  return (
-    <div className="employee-card">
-      <h1>{employee.name}</h1>
-      <h1>{employee.phoneNumber}</h1>
-      <h1>{employee.email}</h1>
-      <h1>{employee.id}</h1>
-      <h1>{employee.position}</h1>
-      <img src={employee.image} alt="" style={{ height: "150px", objectFit: "cover" }} />
-      {/* <button onClick={() => editEmployee(employee.id, employee)}>Edit</button> */}
-      {/* <button onClick={async () => {
-        try {
-          await axios.delete(`http://localhost:8000/employees/${employee.id}`);
-          console.log("deleted");
-        } catch (error) {
-          console.error("Error deleting employee:", error);
+  return (   
+      
+      <div className="employee_card">  
+        { console.log(employee) }
+        {
+          employee.img_url && 
+            (
+              <div className='employee_avatar'>
+                  <h3></h3>
+                  <img src={employee.img_url} alt="Preview" style={{ height: "150px", objectFit: "cover" }} />
+              </div>
+            )
         }
-      }}>Delete</button> */}
-    </div>
+
+        <div className="employee_details">
+          <h1>{employee.employeeId}</h1>
+          <big>{employee.name}</big><br/>                 
+          <strong>{employee.position}</strong><hr/>
+          <small>{employee.email}</small><br/>  
+          <small>{employee.phone}</small> 
+        </div>      
+
+        {/* <button onClick={() => editEmployee(employee.id, employee)}>Edit</button> */}
+        {
+          /* <button onClick={async () => {
+            try {
+              await axios.delete(`http://localhost:8000/employees/${employee.id}`);
+              console.log("deleted");
+            } catch (error) {
+              console.error("Error deleting employee:", error);
+            }
+          }}>Delete</button> */
+        }
+
+      </div>
+    
   );
 };
 

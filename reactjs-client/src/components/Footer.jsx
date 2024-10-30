@@ -1,8 +1,8 @@
-raimport React from 'react'
+import React from 'react'
 
 const Footer = () => {
   return (
-    <div>Home</div>
+    <div>footer</div>
   )
 }
 
