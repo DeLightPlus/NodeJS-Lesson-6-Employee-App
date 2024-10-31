@@ -45,11 +45,12 @@ app.delete('/api/employees/:id', deleteEmployeeById);
 // PUT /api/employees/:id - Update an employee by ID
 app.put('/api/employees/:id', async (req, res) => {
     const id = req.params.id;
-    const { name, email, phone, position, img_url } = req.body;
+    const { name, email, phone, position, image } = req.body;
 
-    try {
+    try 
+    {
         const employeeDoc = doc(db, 'employees', id);
-        await setDoc(employeeDoc, { name, email, phone, position, img_url }, { merge: true });
+        await setDoc(employeeDoc, { name, email, phone, position, image }, { merge: true });
         res.status(200).send({ message: 'Employee updated successfully' });
     } catch (error) {
         console.error("Error updating employee:", error);

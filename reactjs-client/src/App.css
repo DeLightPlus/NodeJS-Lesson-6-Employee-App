@@ -44,17 +44,29 @@
   flex-direction: row;
 }
 
+.employee_list
+{
+    display: flex;
+    width: 100%;
+    flex-wrap: wrap;
+    gap: 16px;
+    padding: 16px;
+    justify-content: center;
+}
+
 .employee_card
 {
     display: flex;
     border-radius: 16px;
     background: #ddd;
     width: 380px;
+    height: 230px;
     padding: 8px;
     margin-bottom: 8px;
     justify-content: space-between;
     align-items: start;
     gap: 16px;
+    border: 1px solid black;
 }
 
 .employee_details
@@ -66,7 +78,7 @@
 {
   background:#3494fa;
   padding: 8px;
-  border-top-right-radius: 8px;
+  border-bottom-right-radius: 8px;
   font-size: 18px;
   font-weight: 600;
 }
@@ -186,3 +198,5 @@
   .modal-content {
     @apply md:w-1/2 lg:w-1/3;
   }
+
+  

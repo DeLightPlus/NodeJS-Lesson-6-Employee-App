@@ -4,7 +4,7 @@ const EmployeeCard = ({ employee }) => {
   return (   
       
       <div className="employee_card">  
-        { console.log(employee) }
+        {/* { console.log(employee) } */}
         {
           employee.img_url && 
             (
@@ -16,24 +16,30 @@ const EmployeeCard = ({ employee }) => {
         }
 
         <div className="employee_details">
-          <h1>{employee.employeeId}</h1>
           <big>{employee.name}</big><br/>                 
-          <strong>{employee.position}</strong><hr/>
-          <small>{employee.email}</small><br/>  
-          <small>{employee.phone}</small> 
+          <strong>{employee.position}</strong>
+          <h1>{employee.employeeId}</h1>
+          <hr/>
+          <div>
+            <small>{employee.email}</small><br/>  
+            <small>{employee.phone}</small> | 
+
+            <button> Edit</button>
+            {
+              <button onClick={async () => {
+                // try {
+                //   await axios.delete(`http://localhost:8000/employees/${employee.id}`);
+                //   console.log("deleted");
+                // } catch (error) {
+                //   console.error("Error deleting employee:", error);
+                // }
+              }}>Delete</button> 
+            }
+
+          </div>
         </div>      
 
-        {/* <button onClick={() => editEmployee(employee.id, employee)}>Edit</button> */}
-        {
-          /* <button onClick={async () => {
-            try {
-              await axios.delete(`http://localhost:8000/employees/${employee.id}`);
-              console.log("deleted");
-            } catch (error) {
-              console.error("Error deleting employee:", error);
-            }
-          }}>Delete</button> */
-        }
+        
 
       </div>
     
