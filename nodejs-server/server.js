@@ -2,6 +2,7 @@ require('dotenv').config();
 const express = require("express");
 const cors = require('cors');
 const { doc, setDoc } = require('firebase/firestore');
+const multer = require('multer')
 
 const { getEmployees, getEmployeeById, addEmployee, deleteEmployeeById } = require('./controllers/auth');
 
@@ -30,6 +31,9 @@ app.use(cors({
     }
 }));
 
+const storage = multer.memoryStorage();
+const upload = multer({storage});
+
 // API endpoint to get all employees
 app.get('/api/employees', getEmployees);
 
@@ -37,7 +41,7 @@ app.get('/api/employees', getEmployees);
 app.get('/api/employees/:id', getEmployeeById);
 
 // API endpoint to create a new employee
-app.post('/api/employees', addEmployee);
+app.post('/api/employees', upload.single('image') ,addEmployee);
 
 // DELETE /api/employees/:id - Delete an employee by ID
 app.delete('/api/employees/:id', deleteEmployeeById);

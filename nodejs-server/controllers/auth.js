@@ -1,24 +1,18 @@
-const { collection, getDocs, doc, 
-    getDoc, addDoc, deleteDoc, setDoc 
+const { collection, getDocs, doc,
+    getDoc, addDoc, deleteDoc, setDoc
 } = require('firebase/firestore');
 const { ref, uploadBytes, getDownloadURL } = require('firebase/storage');
-const { db, storage } = require('../firebase/config'); 
+const { db} = require('../firebase/config');
+const { getStorage } = require('firebase/storage')
 
 const getEmployees = async (req, res) => {
-    try 
-    {
+    try {
         const employeesCollection = collection(db, 'employees');
         const employeeSnapshot = await getDocs(employeesCollection);
         const employees = employeeSnapshot.docs.map(doc => ({ id: doc.id, ...doc.data() }));
-       
-        // listAll(ref(storage, 'files'))
-        // .then(images => { 
-        //     console.log('images', images.items)
-        // })
         res.json(employees);
-    } 
-    catch (error) 
-    {
+    }
+    catch (error) {
         console.error("Error fetching employees:", error);
         res.status(500).send({ message: 'Error fetching employees', error });
     }
@@ -27,56 +21,57 @@ const getEmployees = async (req, res) => {
 const getEmployeeById = async (req, res) => {
     const id = req.params.id;
 
-    try 
-    {
+    try {
         const employeeDoc = doc(db, 'employees', id);
         const employeeSnapshot = await getDoc(employeeDoc);
 
-        if (employeeSnapshot.exists()) 
-        {
+        if (employeeSnapshot.exists()) {
             res.json({ id: employeeSnapshot.id, ...employeeSnapshot.data() });
-        } 
-        else 
-        {
+        }
+        else {
             res.status(404).send({ message: 'Employee not found' });
         }
-    } 
-    catch (error) 
-    {
+    }
+    catch (error) {
         console.error("Error fetching employee:", error);
         res.status(500).send({ message: 'Error fetching employee', error });
     }
 }
 
-const uploadImage = async (file, id) => {
-    if (!file) return null;
-    const imageRef = ref(storage, `files/${id}`);
-    await uploadBytes(imageRef, file);
-    const url = await getDownloadURL(imageRef);
-    return url;
-};
+// const uploadImage = async (file, id) => {
+//     if (!file) return null;
+//     const imageRef = ref(storage, `files/${id}`);
+//     await uploadBytes(imageRef, file);
+//     const url = await getDownloadURL(imageRef);
+//     return url;
+// };
 
 const addEmployee = async (req, res) => {
-    const { employeeId, name, email, phone, position, image } = req.body;
+   
+    // console.log(photo, ' vs ', image);
+    // const imageUrl = await uploadImage(image, employeeId);
 
-    const photo = req.file;
-    console.log(photo, ' vs ', image);
-    const imageUrl = await uploadImage(image, employeeId);
+    // if (!employeeId || !name || !email || !phone || !position || !imageUrl) {
+    //     return res.status(400).json({ error: 'Missing required fields' });
+    // }
 
-    if (!employeeId || !name || !email || !phone || !position || !imageUrl) 
-    {
-        return res.status(400).json({ error: 'Missing required fields' });
-    }
-"https://firebasestorage.googleapis.com/v0/b/restlebnb-hotel-app.appspot.com/o/files%2F20201030SD99?alt=media&token=e26a7f49-9588-4b6b-a9ef-358fd7702284"
+    try {
 
-    try 
-    {   
-        const newEmployee = { employeeId, name, email, phone, position, imageUrl };
+        const { employeeId, name, email, phone, position} = req.body;
+        const photo = req.file;
+
+        const storage = getStorage();
+
+        const fileRef = ref(storage, `files/${employeeId}`);
+        await uploadBytes(fileRef, photo.buffer );
+        const imageUrl = await getDownloadURL(fileRef);
+
+         const newEmployee = { employeeId, name, email, phone, position, imageUrl };
         const docRef = await addDoc(collection(db, 'employees'), newEmployee);
         res.status(201).json({ id: docRef.id, ...newEmployee });
-    } 
-    catch (error) 
-    {
+        // console.log(url)
+    }
+    catch (error) {
         console.error("Error adding employee:", error);
         res.status(500).send({ message: 'Error adding employee', error });
     }
@@ -85,14 +80,12 @@ const addEmployee = async (req, res) => {
 const deleteEmployeeById = async (req, res) => {
     const id = req.params.id;
 
-    try 
-    {
+    try {
         const employeeDoc = doc(db, 'employees', id);
         await deleteDoc(employeeDoc);
         res.status(200).send({ message: 'Employee deleted successfully' });
-    } 
-    catch (error) 
-    {
+    }
+    catch (error) {
         console.error("Error deleting employee:", error);
         res.status(500).send({ message: 'Error deleting employee', error });
     }

@@ -7,8 +7,10 @@ function AddEmployee() {
     const [name, setName] = useState("");
     const [email, setEmailAddress] = useState("");
     const [phone, setPhoneNumber] = useState("");
+
     const [img_url, setImageUrl] = useState("");
     const [image, setImage] = useState("");
+
     const [position, setPosition] = useState("");
     const [submittedData, setSubmittedData] = useState(null);
     const [employees, setEmployees] = useState([]);
@@ -18,15 +20,13 @@ function AddEmployee() {
         e.preventDefault();
 
         const employee = { employeeId, name, email, phone, position, image };
-        const validationErrors = validateInputs(employee);
-        if (Object.keys(validationErrors).length > 0) {
-            setErrors(validationErrors);
-            return;
-        }
-
+        
         try {
             
-            const response = await axios.post("http://localhost:8000/api/employees", { ...employee });
+            const response = await axios.post("http://localhost:8000/api/employees", employee , 
+                {
+                    headers: { "Content-Type": "multipart/form-data", }
+            }); 
             const data = response.data;
             setSubmittedData(employee);
             clearForm();
@@ -77,14 +77,14 @@ function AddEmployee() {
 
     useEffect(() => {
         get_users();
-    }, []);
+    }, [employees]);
 
     return (
         <div className="AddEmployees">
             <EmployeeCard employee={{ employeeId, name, email, phone, position, img_url }} />
             <div className="form-container">
                 <h2>Add Employee</h2><hr/>
-                {console.log(image,' vs url:', img_url) }
+                {/* {console.log(image,' vs url:', img_url) } */}
                 <form onSubmit={handleSubmits}>
                     <label>
                         ID:
@@ -131,7 +131,7 @@ function AddEmployee() {
                             img_url && (
                                 <div>
                                     <h3>Preview:</h3>
-                                    <img src={img_url} alt="Preview" style={{ height: "150px", objectFit: "cover" }} />
+                                    <img src={img_url} alt="Preview" style={{ height:"64px", width:"64px",  objectFit: "cover" }} />
                                 </div>
                             )
                         }
@@ -156,6 +156,8 @@ function AddEmployee() {
                     <button className="addemployee_btn" type="submit">
                         Submit
                     </button>
+
+                    {/* <img src="https://firebasestorage.googleapis.com/v0/b/restlebnb-hotel-app.appspot.com/o/files%2F20201030SD96?alt=media&token=1919ce4e-e5fb-4a12-b29f-32788dc94a0e"/> */}
                 </form>
             </div>            
         </div>
