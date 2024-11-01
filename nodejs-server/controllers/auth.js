@@ -1,9 +1,8 @@
 const { collection, getDocs, doc,
     getDoc, addDoc, deleteDoc, setDoc
 } = require('firebase/firestore');
-const { ref, uploadBytes, getDownloadURL } = require('firebase/storage');
-const { db} = require('../firebase/config');
-const { getStorage } = require('firebase/storage')
+const { ref, uploadBytes, getDownloadURL, getStorage } = require('firebase/storage');
+const { db, firebase_storage} = require('../firebase/config');
 
 const getEmployees = async (req, res) => {
     try {
@@ -38,13 +37,6 @@ const getEmployeeById = async (req, res) => {
     }
 }
 
-// const uploadImage = async (file, id) => {
-//     if (!file) return null;
-//     const imageRef = ref(storage, `files/${id}`);
-//     await uploadBytes(imageRef, file);
-//     const url = await getDownloadURL(imageRef);
-//     return url;
-// };
 
 const addEmployee = async (req, res) => {
    
@@ -91,4 +83,22 @@ const deleteEmployeeById = async (req, res) => {
     }
 }
 
-module.exports = { getEmployees, getEmployeeById, addEmployee, deleteEmployeeById }
+const updateEmployeeById = async (req, res) => {
+    const id = req.params.id;
+    const { name, email, phone, position, image } = req.body;
+    const photo = req.file;
+    console.log(photo, ' vs ', image);
+    
+
+    try 
+    {
+        const employeeDoc = doc(db, 'employees', id);
+        await setDoc(employeeDoc, { name, email, phone, position, image }, { merge: true });
+        res.status(200).send({ message: 'Employee updated successfully' });
+    } catch (error) {
+        console.error("Error updating employee:", error);
+        res.status(500).send({ message: 'Error updating employee', error });
+    }
+}
+
+module.exports = { getEmployees, getEmployeeById, addEmployee, deleteEmployeeById, updateEmployeeById }

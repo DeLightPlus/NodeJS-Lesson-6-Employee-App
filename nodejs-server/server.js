@@ -4,11 +4,13 @@ const cors = require('cors');
 const { doc, setDoc } = require('firebase/firestore');
 const multer = require('multer')
 
-const { getEmployees, getEmployeeById, addEmployee, deleteEmployeeById } = require('./controllers/auth');
+const { 
+    getEmployees, getEmployeeById, 
+    addEmployee, deleteEmployeeById, 
+    updateEmployeeById } = require('./controllers/auth');
 
 const app = express();
 const port = 8000;
-
 
 app.use(express.json());
 
@@ -47,24 +49,22 @@ app.post('/api/employees', upload.single('image') ,addEmployee);
 app.delete('/api/employees/:id', deleteEmployeeById);
 
 // PUT /api/employees/:id - Update an employee by ID
-app.put('/api/employees/:id', async (req, res) => {
-    const id = req.params.id;
-    const { name, email, phone, position, image } = req.body;
-
-    try 
-    {
-        const employeeDoc = doc(db, 'employees', id);
-        await setDoc(employeeDoc, { name, email, phone, position, image }, { merge: true });
-        res.status(200).send({ message: 'Employee updated successfully' });
-    } catch (error) {
-        console.error("Error updating employee:", error);
-        res.status(500).send({ message: 'Error updating employee', error });
-    }
-});
+app.put('/api/employees/:id', updateEmployeeById);
 
 // PATCH /api/employees/:id - Partially update an employee by ID
-app.patch('/api/employees/:id', async (req, res) => {
+app.patch('/api/employees/:id', upload.single('image'), async (req, res) => {
     const id = req.params.id;
+    const updatedData = req.body;
+    console.log('trying patch');
+    
+
+    if (req.file) 
+    {
+        console.log('ID:', id, ' ,req.file:', req.file, ' ,data:', req.body);
+        
+        // Assuming you want to save the image data in a field named 'avatar'
+        updatedData.avatar = req.file.buffer; // or handle the image as needed (e.g., save to a storage service)
+    }
 
     try {
         const employeeDoc = doc(db, 'employees', id);
