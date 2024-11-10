@@ -7,47 +7,51 @@ function AddEmployee() {
     const [name, setName] = useState("");
     const [email, setEmailAddress] = useState("");
     const [phone, setPhoneNumber] = useState("");
-    const [img_url, setImage] = useState(""); // Ensure this is consistent
+
+    const [img_url, setImageUrl] = useState("");
+    const [image, setImage] = useState("");
+
     const [position, setPosition] = useState("");
-    
     const [submittedData, setSubmittedData] = useState(null);
     const [employees, setEmployees] = useState([]);
-    const [errors, setErrors] = useState({}); // State for holding validation errors
+    const [errors, setErrors] = useState({});
 
     const handleSubmits = async (e) => {
         e.preventDefault();
 
-        const employee = { employeeId, name, email, phone, position, img_url };
-        console.log('adding, ', employee);
+        const employee = { employeeId, name, email, phone, position, image };
         
-        const validationErrors = validateInputs(employee);
-        if (Object.keys(validationErrors).length > 0) {
-            setErrors(validationErrors);
-            return; // Stop submission if there are validation errors
-        }
-
         try {
-            const response = await axios.post("http://localhost:8000/api/employees", employee);
+            
+            const response = await axios.post("http://localhost:8000/api/employees", employee , 
+                {
+                    headers: { "Content-Type": "multipart/form-data", }
+            }); 
             const data = response.data;
-
             setSubmittedData(employee);
-            console.log(data);
-            clearForm(); // Clear form after successful submission
+            clearForm();
         } catch (error) {
             console.error("Error adding employee:", error);
         }
     };
 
+    
+
+    const handleImageChange = (e) => {
+        if (e.target.files[0]) {
+            setImage(e.target.files[0]);
+            setImageUrl(URL.createObjectURL(e.target.files[0]));
+        }
+    };
+
     const validateInputs = (employee) => {
         const errors = {};
-
-        if (!employee.employeeId) errors.employeeId = "ID is required."; // Corrected property
+        if (!employee.employeeId) errors.employeeId = "ID is required.";
         if (!employee.name) errors.name = "Name is required.";
         if (!employee.email) errors.email = "Email is required.";
         if (!/\S+@\S+\.\S+/.test(employee.email)) errors.email = "Email is invalid.";
         if (!employee.phone) errors.phone = "Phone number is required.";
         if (!employee.position) errors.position = "Position is required.";
-        
         return errors;
     };
 
@@ -55,10 +59,10 @@ function AddEmployee() {
         setName("");
         setEmailAddress("");
         setPhoneNumber("");
-        setImage(""); // Clear image URL
+        setImage("");
         setPosition("");
         setEmployeeId("");
-        setErrors({}); // Clear errors on form reset
+        setErrors({});
     };
 
     const get_users = async () => {
@@ -73,13 +77,14 @@ function AddEmployee() {
 
     useEffect(() => {
         get_users();
-    }, []);
+    }, [employees]);
 
     return (
         <div className="AddEmployees">
             <EmployeeCard employee={{ employeeId, name, email, phone, position, img_url }} />
             <div className="form-container">
                 <h2>Add Employee</h2><hr/>
+                {/* {console.log(image,' vs url:', img_url) } */}
                 <form onSubmit={handleSubmits}>
                     <label>
                         ID:
@@ -118,7 +123,7 @@ function AddEmployee() {
                             value={phone}
                             onChange={(e) => setPhoneNumber(e.target.value)}
                         />
-                        {errors.phone && <span>{errors.phone}</span>}
+                        {errors.phone && <span>{errors.phone }</span>}
                     </label>
 
                     <label className="image_preview">                        
@@ -126,14 +131,14 @@ function AddEmployee() {
                             img_url && (
                                 <div>
                                     <h3>Preview:</h3>
-                                    <img src={img_url} alt="Preview" style={{ height: "150px", objectFit: "cover" }} />
+                                    <img src={img_url} alt="Preview" style={{ height:"64px", width:"64px",  objectFit: "cover" }} />
                                 </div>
                             )
                         }
                         <div>Image: 
                         <input
                             type="file"
-                            onChange={(e) => setImage(URL.createObjectURL(e.target.files[0]))}
+                            onChange={handleImageChange}
                         /></div>
                         
                     </label>
@@ -151,6 +156,8 @@ function AddEmployee() {
                     <button className="addemployee_btn" type="submit">
                         Submit
                     </button>
+
+                    {/* <img src="https://firebasestorage.googleapis.com/v0/b/restlebnb-hotel-app.appspot.com/o/files%2F20201030SD96?alt=media&token=1919ce4e-e5fb-4a12-b29f-32788dc94a0e"/> */}
                 </form>
             </div>            
         </div>

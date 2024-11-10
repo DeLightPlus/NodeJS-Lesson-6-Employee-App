@@ -1,6 +1,8 @@
 require('dotenv').config();
-const firebase = require('firebase/app');
+const { initializeApp } = require("firebase/app");
 const { getFirestore } = require('firebase/firestore');
+const { getStorage } = require('firebase/storage');
+
 
 // Firebase configuration from environment variables
 const firebaseConfig = {
@@ -14,10 +16,10 @@ const firebaseConfig = {
 };
 
 // Initialize Firebase
-const app = firebase.initializeApp(firebaseConfig);
-
+const app = initializeApp(firebaseConfig);
 // Initialize Firestore using the initialized app
 const db = getFirestore(app);
+const firebase_storage = getStorage(app)
 
 // Export the Firestore database instance
-module.exports = { db };
+module.exports = { db, firebase_storage };

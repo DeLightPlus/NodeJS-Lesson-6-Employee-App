@@ -4,7 +4,7 @@ import EmployeeCard from './EmployeeCard';
 
 const EmployeeList = ({ employees }) => {
   return (
-    <div className="employee-list">
+    <div className="employee_list">
       {
         employees.map((employee) => (
           <EmployeeCard key={employee.id} employee={employee} />
