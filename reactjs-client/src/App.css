@@ -43,6 +43,11 @@
 {
   display: flex;
   flex-direction: row;
+  margin: 8px 0;
+  width: 100%;
+  padding: 10px;
+  border: #ddd solid 1px;
+  color: aliceblue;
 }
 
 .employee_list
@@ -199,9 +204,11 @@
 
 .addemployee_btn
 {
-    padding: 10px;
-    border: #ddd solid 1px;
-    color: aliceblue;
+  margin: 8px 0;
+  width: 100%;
+  padding: 10px;
+  border: #ddd solid 1px;
+  color: aliceblue;
 }
   
   .card {

@@ -30,6 +30,8 @@ function AddEmployee() {
             const data = response.data;
             setSubmittedData(employee);
             clearForm();
+            location.reload();
+            
         } catch (error) {
             console.error("Error adding employee:", error);
         }

@@ -74,81 +74,104 @@ const EmployeeCard = ({ employee }) => {
 
   return (
     <>
-      <div className="employee_card">
-        <div className="top">
-          {employee.id && console.log(employee.id)}
-          <div className='employee_avatar'>
-            <img 
-              src={employee.imageUrl || employee.img_url} 
-              alt="Preview" 
-              style={{ height: "128px", width: "128px", objectFit: "cover" }} 
-            />
-            <input type='file' 
-             style={{ width: "128px", height: "32px" }} 
-             onChange={(e)=>{ onAvatarChange(e) }}
-            />
-          </div>
-
-          <div className="employee_details">
-            <big>{employee.name}</big><br />
-            <strong>{employee.position}</strong>
-            <h1>{employee.employeeId}</h1>
-            <hr />
-            <div>
-              <small>{employee.email}</small><br />
-              <small>{employee.phone}</small>
-            </div>
-          </div>
-        </div>
-
-        {employee.imageUrl && (
-          <div className="button_group">
-            <button onClick={() => setIsModalOpen(true)}>Edit</button>
-            <button onClick={handleDelete}>Delete</button>
-          </div>
-        )}
-      </div>
+      
 
       {/* Modal for editing employee */}
-      {isModalOpen && (
-        <div className="modal">
-          <div className="modal-content">
-            <span className="close" onClick={() => setIsModalOpen(false)}>&times;</span>
-            <h2>Edit Employee</h2>
-            <form onSubmit={(e) => { e.preventDefault(); handleEdit(); }}>
-              <input
-                type="text"
-                value={editedEmployee.name}
-                onChange={(e) => setEditedEmployee({ ...editedEmployee, name: e.target.value })}
-                placeholder="Name"
-                required
-              />
-              <input
-                type="text"
-                value={editedEmployee.position}
-                onChange={(e) => setEditedEmployee({ ...editedEmployee, position: e.target.value })}
-                placeholder="Position"
-                required
-              />
-              <input
-                type="email"
-                value={editedEmployee.email}
-                onChange={(e) => setEditedEmployee({ ...editedEmployee, email: e.target.value })}
-                placeholder="Email"
-                required
-              />
-              <input
-                type="text"
-                value={editedEmployee.phone}
-                onChange={(e) => setEditedEmployee({ ...editedEmployee, phone: e.target.value })}
-                placeholder="Phone"
-                required
-              />
-              <button type="submit">Save Changes</button>
-            </form>
+      {
+        isModalOpen ? (
+          
+              <form className="employee_card" onSubmit={(e) => { e.preventDefault(); handleEdit(); }}>
+                <div className="top">
+                  <div className='employee_avatar'>
+                    <img 
+                      src={employee.imageUrl || employee.img_url} 
+                      alt="Preview" 
+                      style={{ height: "128px", width: "128px", objectFit: "cover" }} 
+                    />
+                    <input type='file' 
+                    style={{ width: "128px", height: "32px" }} 
+                    onChange={(e)=>{ onAvatarChange(e) }}
+                    />
+                  </div>
+
+                  <div className="employee_details">
+                    <input
+                      type="text"
+                      value={editedEmployee.name}
+                      onChange={(e) => setEditedEmployee({ ...editedEmployee, name: e.target.value })}
+                      placeholder="Name"
+                      required
+                    />
+                    <input
+                      type="text"
+                      value={editedEmployee.position}
+                      onChange={(e) => setEditedEmployee({ ...editedEmployee, position: e.target.value })}
+                      placeholder="Position"
+                      required
+                    />
+                    <input
+                      type="email"
+                      value={editedEmployee.email}
+                      onChange={(e) => setEditedEmployee({ ...editedEmployee, email: e.target.value })}
+                      placeholder="Email"
+                      required
+                    />
+                    <input
+                      type="text"
+                      value={editedEmployee.phone}
+                      onChange={(e) => setEditedEmployee({ ...editedEmployee, phone: e.target.value })}
+                      placeholder="Phone"
+                      required
+                    />
+                  </div>
+                </div>
+
+                <div className="button_group">
+                  <button type="submit">Save</button>
+                  <button className="close" onClick={() => setIsModalOpen(false)}>Cancel</button>
+                </div>
+                
+              </form>       
+            
+          
+        ) : (
+          <div className="employee_card">
+            <div className="top">
+              {employee.id && console.log(employee.id)}
+              <div className='employee_avatar'>
+                <img 
+                  src={employee.imageUrl || employee.img_url} 
+                  alt="Preview" 
+                  style={{ height: "128px", width: "128px", objectFit: "cover" }} 
+                />
+                <input type='file' 
+                style={{ width: "128px", height: "32px" }} 
+                onChange={(e)=>{ onAvatarChange(e) }}
+                />
+              </div>
+
+              <div className="employee_details">
+                <big>{employee.name}</big><br />
+                <strong>{employee.position}</strong>
+                <h1>{employee.employeeId}</h1>
+                <hr />
+                <div>
+                  <small>{employee.email}</small><br />
+                  <small>{employee.phone}</small>
+                </div>
+              </div>
+            </div>
+
+            {employee.imageUrl && (
+              <div className="button_group">
+                <button onClick={() => setIsModalOpen(true)}>Edit</button>
+                <button onClick={handleDelete}>Delete</button>
+              </div>
+            )}
           </div>
-        </div>
-      )}
+
+        )
+      }
     </>
   );
 };

@@ -34,7 +34,7 @@ function App()
   return (
     <div className='EmployeeApp'>      
       
-      <Header />
+      <Header employees={employees}/>
       <hr/>     
 
       <div className='Employees'>

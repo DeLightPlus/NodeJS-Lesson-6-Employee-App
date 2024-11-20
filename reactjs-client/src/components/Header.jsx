@@ -1,7 +1,7 @@
 import React, { useState } from 'react';
 import './Header.css'; // Import your CSS file
 
-const Header = () => {
+const Header = ({employees : data}) => {
     const [searchQuery, setSearchQuery] = useState('');
     const [filteredData, setFilteredData] = useState([]);
 
@@ -25,7 +25,7 @@ const Header = () => {
                         {/* <a href="#" title="">
                             <img src="https://cdn.rareblocks.xyz/collection/celebration/images/logo.svg" alt="Logo" />
                         </a> */}
-                        Employee App
+                        Employee App <sub><small>v6</small></sub>
                     </div>                   
 
                     <div className="nav-links">
@@ -38,11 +38,12 @@ const Header = () => {
                             />
                         </a>                        
                     </div>
+                    {console.log("Filtered: ", filteredData)}
 
-                    <div className="auth-links">
+                    {/* <div className="auth-links">
                         <a href="#" className="nav-link">Sign up</a>
                         <a href="#" className="nav-link">Sign in</a>
-                    </div>
+                    </div> */}
                 </nav>                
             </div>
         </header>
